@@ -1,8 +1,7 @@
 // Brick Kilns Monitoring Dashboard - J&K PCB
 // Fetches data from GitHub-hosted JSON file (Recommended for hosting)
 
-// Update this URL to point to your GitHub raw JSON file
-// Format: https://raw.githubusercontent.com/yourusername/repo-name/main/data/kilns.json
+// GitHub raw JSON file URL
 const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard/main/data/kilns.json';
 
 let map;
@@ -54,22 +53,25 @@ async function loadData() {
         const url = DATA_URL + '?t=' + Date.now();
         
         console.log('Fetching from GitHub:', url);
+        
+        // Use mode: 'cors' explicitly and remove custom headers that might cause preflight
         const response = await fetch(url, {
-            cache: 'no-store',
-            headers: {
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache'
-            }
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
         });
 
         if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('File not found. Please check if kilns.json exists in the data folder.');
+            }
             throw new Error('HTTP ' + response.status + ': ' + response.statusText);
         }
 
         const data = await response.json();
         
         if (!Array.isArray(data)) {
-            throw new Error('Invalid data format - expected array');
+            throw new Error('Invalid data format - expected array. Got: ' + typeof data);
         }
 
         allData = data;
@@ -84,7 +86,13 @@ async function loadData() {
 
     } catch (error) {
         console.error('Error loading data:', error);
+        console.error('URL attempted:', DATA_URL);
         updateStatus('Failed to load data: ' + error.message);
+        
+        // Show helpful error message
+        if (error.message.includes('404') || error.message.includes('not found')) {
+            alert('Error: JSON file not found.\n\nPlease verify:\n1. File exists at: ' + DATA_URL + '\n2. File is named: kilns.json\n3. File is in the data/ folder\n4. Repository is public');
+        }
     } finally {
         btn.innerHTML = origText;
         btn.disabled = false;
@@ -241,5 +249,4 @@ setInterval(function() {
 
 // Initialize on page load
 window.addEventListener('load', init);
-
 
