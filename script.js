@@ -3,7 +3,7 @@
 
 // Update this URL to point to your GitHub raw JSON file
 // Format: https://raw.githubusercontent.com/yourusername/repo-name/main/data/kilns.json
-const DATA_URL = 'https://raw.githubusercontent.com/yourusername/brick-kilns-dashboard/main/data/kilns.json';
+const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard/main/data/kilns.json';
 
 let map;
 let markersLayer;
@@ -241,4 +241,5 @@ setInterval(function() {
 
 // Initialize on page load
 window.addEventListener('load', init);
+
 
