@@ -2,8 +2,8 @@
 // Fetches data from GitHub-hosted JSON file (Recommended for hosting)
 
 // GitHub raw JSON file URL
-// const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard/main/data/kilns.json';
-   const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard/main/kilns.json';
+const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard/main/data/kilns.json';
+
 let map;
 let markersLayer;
 let allData = [];
@@ -76,6 +76,11 @@ async function loadData() {
 
         allData = data;
         console.log('Loaded ' + allData.length + ' kilns');
+        
+        // Log first record to check structure
+        if (allData.length > 0) {
+            console.log('First record sample:', allData[0]);
+        }
 
         if (allData.length === 0) {
             updateStatus('No data found');
@@ -135,9 +140,28 @@ function displayData(data) {
     let expiredCount = 0;
     let processingCount = 0;
     const markerArray = [];
+    let skippedCount = 0;
 
     for (let i = 0; i < data.length; i++) {
         const kiln = data[i];
+        
+        // Validate coordinates
+        const lat = parseFloat(kiln.lat);
+        const lng = parseFloat(kiln.lng);
+        
+        if (isNaN(lat) || isNaN(lng)) {
+            console.warn('Skipping kiln with invalid coordinates:', kiln.name, 'lat:', kiln.lat, 'lng:', kiln.lng);
+            skippedCount++;
+            continue;
+        }
+        
+        // Ensure coordinates are valid numbers
+        if (lat === undefined || lng === undefined || lat === null || lng === null) {
+            console.warn('Skipping kiln with undefined coordinates:', kiln.name);
+            skippedCount++;
+            continue;
+        }
+
         const status = getStatus(kiln.validity);
         
         // Update counters
@@ -153,25 +177,30 @@ function displayData(data) {
         const color = status === 'valid' ? '#10b981' : 
                      status === 'expired' ? '#ef4444' : '#f59e0b';
 
-        // Create marker
-        const marker = L.circleMarker([kiln.lat, kiln.lng], {
-            radius: 7,
-            fillColor: color,
-            color: '#fff',
-            weight: 2,
-            fillOpacity: 0.9
-        });
+        // Create marker with validated coordinates
+        try {
+            const marker = L.circleMarker([lat, lng], {
+                radius: 7,
+                fillColor: color,
+                color: '#fff',
+                weight: 2,
+                fillOpacity: 0.9
+            });
 
-        // Popup content
-        marker.bindPopup(createPopup(kiln, status));
+            // Popup content
+            marker.bindPopup(createPopup(kiln, status));
 
-        // Click handler for sidebar
-        marker.on('click', function() {
-            document.getElementById('kilnInfo').innerHTML = createPopup(kiln, status, true);
-        });
+            // Click handler for sidebar
+            marker.on('click', function() {
+                document.getElementById('kilnInfo').innerHTML = createPopup(kiln, status, true);
+            });
 
-        marker.addTo(markersLayer);
-        markerArray.push(marker);
+            marker.addTo(markersLayer);
+            markerArray.push(marker);
+        } catch (error) {
+            console.error('Error creating marker for:', kiln.name, error);
+            skippedCount++;
+        }
     }
 
     // Update statistics
@@ -179,11 +208,19 @@ function displayData(data) {
     document.getElementById('valid').textContent = validCount;
     document.getElementById('expired').textContent = expiredCount;
     document.getElementById('processing').textContent = processingCount;
+    
+    if (skippedCount > 0) {
+        console.warn('Skipped ' + skippedCount + ' kilns with invalid coordinates');
+        updateStatus('LIVE: ' + markerArray.length + ' kilns displayed (' + skippedCount + ' skipped)');
+    }
 
     // Fit map to show all markers
     if (markerArray.length > 0) {
         const group = new L.featureGroup(markerArray);
         map.fitBounds(group.getBounds().pad(0.15));
+    } else {
+        console.error('No valid markers to display');
+        updateStatus('No valid coordinates found');
     }
 }
 
@@ -249,5 +286,4 @@ setInterval(function() {
 
 // Initialize on page load
 window.addEventListener('load', init);
-
 
