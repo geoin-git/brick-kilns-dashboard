@@ -7,7 +7,7 @@ function getDataUrl() {
     // Use URL constructor to resolve relative path from current page location
     // This works for both local development and GitHub Pages (with or without subdirectory)
     const baseUrl = window.location.href;
-    const dataPath = 'data/kilns.json';
+    const dataPath = 'kilns.json';
     
     // Resolve the data path relative to the current HTML file
     try {
@@ -730,4 +730,5 @@ setInterval(function() {
 
 // Initialize on page load
 window.addEventListener('load', init);
+
 
