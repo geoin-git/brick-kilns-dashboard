@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Google Sheets Connection</title>
+</head>
+<body>
+    <h1>Google Sheets Connection Test</h1>
+    <button onclick="testDirect()">Test Direct Fetch</button>
+    <button onclick="testProxy()">Test Proxy Fetch</button>
+    <div id="results"></div>
+
+    <script>
+        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQchogckEcJIysvPs12lW-HQdnFwTvz5ISi9tSGL1_gWyDUbaqnnoKeNCs4hOs8Myg8bOXfIYrQ_Ddf/pub?gid=0&single=true&output=csv';
+        const PROXY_URL = 'https://api.allorigins.win/get?url=';
+
+        async function testDirect() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing direct fetch...</p>';
+            
+            try {
+                const response = await fetch(GOOGLE_SHEET_URL);
+                const text = await response.text();
+                results.innerHTML = '<h2>Direct Fetch Result:</h2><p style="color:green">SUCCESS</p><pre>' + text.substring(0, 500) + '</pre>';
+            } catch (error) {
+                results.innerHTML = '<h2>Direct Fetch Result:</h2><p style="color:red">FAILED: ' + error.message + '</p>';
+            }
+        }
+
+        async function testProxy() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing proxy fetch...</p>';
+            
+            try {
+                const proxyUrl = PROXY_URL + encodeURIComponent(GOOGLE_SHEET_URL);
+                const response = await fetch(proxyUrl);
+                const data = await response.json();
+                const csv = data.contents || '';
+                
+                if (csv.trim().startsWith('data:text/csv;base64,')) {
+                    const base64Data = csv.trim().substring('data:text/csv;base64,'.length);
+                    const decoded = atob(base64Data);
+                    results.innerHTML = '<h2>Proxy Fetch Result:</h2><p style="color:green">SUCCESS</p><pre>' + decoded.substring(0, 500) + '</pre>';
+                } else {
+                    results.innerHTML = '<h2>Proxy Fetch Result:</h2><p style="color:green">SUCCESS</p><pre>' + csv.substring(0, 500) + '</pre>';
+                }
+            } catch (error) {
+                results.innerHTML = '<h2>Proxy Fetch Result:</h2><p style="color:red">FAILED: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
+

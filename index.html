@@ -6,6 +6,8 @@
     <title>Brick Kilns Monitoring Dashboard - J&K PCB</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 </head>
 <body>
     <header class="app-header">
@@ -17,11 +19,15 @@
             </div>
         </div>
         <div class="header-right">
+            <select id="viewMode">
+                <option value="markers">Markers</option>
+                <option value="heatmap">Heatmap</option>
+            </select>
             <select id="mapType">
-                <option value="osm">Street Map</option>
-                <option value="satellite">Satellite</option>
-                <option value="esri">ESRI Imagery</option>
-                <option value="terrain">Terrain</option>
+                <option value="googleStreet">Google Street</option>
+                <option value="openstreet">OpenStreet</option>
+                <option value="googleMap">Google Map</option>
+                <option value="googleSatellite">Google Satellite</option>
             </select>
             <button id="refreshBtn" onclick="loadData()">⟳ Refresh</button>
             <div id="status" class="status">Initializing...</div>
@@ -63,14 +69,50 @@
                     <span id="expired" class="stat-value">0</span>
                 </div>
                 <div class="stat-card processing">
-                    <span class="stat-label">Under Process</span>
+                    <span class="stat-label">Processing</span>
                     <span id="processing" class="stat-value">0</span>
                 </div>
             </section>
 
-            <section class="search-section">
-                <h2>Search</h2>
-                <input type="text" id="searchInput" placeholder="Search by name, owner, or village...">
+            <section class="filters-section">
+                <h2>Filters</h2>
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="searchInput" placeholder="Search by name, owner, or village...">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="valid">Valid</option>
+                        <option value="expired">Expired</option>
+                        <option value="processing">Processing</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date Range (CTO)</label>
+                    <input type="date" id="dateFrom" placeholder="From">
+                    <input type="date" id="dateTo" placeholder="To" style="margin-top: 0.5rem;">
+                </div>
+                <button id="clearFilters" class="btn-clear">Clear Filters</button>
+            </section>
+
+            <section class="export-section">
+                <h2>Export Data</h2>
+                <div class="export-buttons">
+                    <button id="exportCSV" class="btn-export">📥 Export CSV</button>
+                    <button id="exportExcel" class="btn-export">📊 Export Excel</button>
+                </div>
+            </section>
+
+            <section class="charts-section">
+                <h2>Analytics</h2>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
             </section>
 
             <section class="info-section">
@@ -84,7 +126,9 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

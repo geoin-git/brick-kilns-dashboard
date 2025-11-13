@@ -1,0 +1,10 @@
+https://docs.google.com/spreadsheets/d/e/2PACX-1vQchogckEcJIysvPs12lW-HQdnFwTvz5ISi9tSGL1_gWyDUbaqnnoKeNCs4hOs8Myg8bOXfIYrQ_Ddf/pubhtml
+
+
+sheet
+
+https://docs.google.com/spreadsheets/d/1oPduQ24V0KzH0z7OSlgXBqq_GYVVTTk1jSPmCMsZzIg/edit?gid=0#gid=0
+
+
+
+Works fine.  changes to be made: 1. default basemap should be google map, then google earth, than openstreet map. 2. Add Gis based fucntions like, a button to reset the extent of the map to the original, name it home. 3. another buttons suggestions, place them down to zoom in zoom out. make the button panel a bit transparent to look good.
