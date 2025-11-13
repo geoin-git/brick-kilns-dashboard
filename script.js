@@ -3,7 +3,8 @@
 
 // GitHub raw JSON file URL
 //const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard/main/data/kilns.json';
-const DATA_URL = 'kilns.json';
+const DATA_URL = '/main/data/kilns.json';
+//const DATA_URL = 'kilns.json';
 
 let map;
 let markersLayer;
@@ -20,9 +21,8 @@ let currentFilters = {
 
 // Map tile layers
 const tileLayers = {
-    googleStreet: L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { attribution: '© Google' }),
     openstreet: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }),
-    //googleStreet: L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { attribution: '© Google' }),
+    googleStreet: L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { attribution: '© Google' }),
     googleMap: L.tileLayer('https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}', { attribution: '© Google' }),
     googleSatellite: L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { attribution: '© Google' })
 };
@@ -698,13 +698,4 @@ setInterval(function() {
 
 // Initialize on page load
 window.addEventListener('load', init);
-
-
-
-
-
-
-
-
-
 
