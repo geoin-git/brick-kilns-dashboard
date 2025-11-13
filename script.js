@@ -2,7 +2,7 @@
 // Fetches data from GitHub-hosted JSON file (Recommended for hosting)
 
 // GitHub raw JSON file URL
-const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard/kilns.json';
+const DATA_URL = 'https://raw.githubusercontent.com/geoin-git/brick-kilns-dashboard//main/kilns.json';
 //const DATA_URL = 'kilns.json';
 
 let map;
@@ -698,6 +698,7 @@ setInterval(function() {
 
 // Initialize on page load
 window.addEventListener('load', init);
+
 
 
 
